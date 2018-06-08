@@ -21,11 +21,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 interface SubscriberListener {
-    void gotValues(String topic, ArrayList<Double> values);
+    void gotValues(String topic, GameState.DataSet val);
 }
 
 public class Subscriber {
-    final String serverURI = "";
+    final String serverURI = "tcp://192.168.43.42:1883";
     String clientId = "AndroidClient";
 
     private Activity activity;
@@ -40,12 +40,12 @@ public class Subscriber {
         client.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
-                keinPlan.log(activity, "Connection to broker established");
+                FocusBeam.log(activity, "Connection to broker established");
             }
 
             @Override
             public void connectionLost(Throwable cause) {
-                keinPlan.log(activity, "Connection lost, please restart!");
+                FocusBeam.log(activity, "Connection lost, please restart!");
             }
 
             @Override
@@ -68,7 +68,7 @@ public class Subscriber {
         } catch(MqttException ex) {
             ex.printStackTrace();
 
-            keinPlan.log(activity, "Failed to connect to " + serverURI);
+            FocusBeam.log(activity, "Failed to connect to " + serverURI + " " + ex);
         }
     }
 
@@ -89,13 +89,13 @@ public class Subscriber {
                 try {
                     subscribeEverything();
                 } catch(MqttException ex) {
-                    keinPlan.log(activity, "Couldn't subscribe to the broker!");
+                    FocusBeam.log(activity, "Couldn't subscribe to the broker!");
                 }
             }
 
             @Override
             public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                keinPlan.log(activity, "Failed to connect to " + serverURI);
+                FocusBeam.log(activity, "Failed to connect to " + serverURI + " " + exception);
             }
         });
     }
@@ -109,7 +109,7 @@ public class Subscriber {
 
             @Override
             public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                keinPlan.log(activity, "Couldn't subscribe to everything!");
+                FocusBeam.log(activity, "Couldn't subscribe to everything!");
             }
         });
     }
@@ -121,15 +121,15 @@ public class Subscriber {
         try {
             String jsonString = new String(payload);
             JSONArray json = new JSONArray(jsonString).getJSONArray(0);
-
-            for(int i = 0; i < json.length(); i++)
-                values.add(Double.parseDouble(json.getString(i)));
-
-            listener.gotValues(topic, values);
-        } catch(JSONException json) {
+            Log.d("Focus Beam", "Blub");
+            listener.gotValues(topic, new GameState.DataSet(json));
+            Log.d("Focus Beam", "Blub");
+        } catch (JSONException json) {
             Log.e("Focus Beam", "Could not parse json string" + json);
         } catch (NumberFormatException ex) {
             Log.e("Focus Beam", "Could not parse double " + ex);
+        } catch (IllegalArgumentException ex) {
+            Log.e("Focus Beam", "Too less values in packet: " + ex);
         }
     }
 }

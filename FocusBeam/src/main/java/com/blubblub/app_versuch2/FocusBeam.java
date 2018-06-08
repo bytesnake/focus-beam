@@ -12,8 +12,10 @@ import android.widget.ImageView;
 import android.support.design.widget.Snackbar;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class keinPlan extends AppCompatActivity {
+public class FocusBeam extends AppCompatActivity {
     private GameState state;
     private GameFieldView game_field;
     private Subscriber subscribe;
@@ -23,19 +25,36 @@ public class keinPlan extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kein_plan);
 
+        // wire everything
         state = new GameState();
         game_field = (GameFieldView)findViewById(R.id.game_field);
+        game_field.state = state;
         subscribe = new Subscriber(this);
 
         subscribe.setListener(new SubscriberListener() {
             @Override
-            public void gotValues(String topic, ArrayList<Double> values) {
+            public void gotValues(String topic, GameState.DataSet val) {
                 // update the state with new values of player "topic"
-                state.update(topic, values);
+                state.update(topic, val);
                 // update the game field according to the state
-                game_field.update(state);
+                game_field.update();
             }
         });
+
+        // we have a continuously running score, update it every 100ms
+        new Timer().scheduleAtFixedRate(new TimerTask(){
+            @Override
+            public void run() {
+                state.updateScore();
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        game_field.invalidate();
+                    }
+                });
+            }
+        },1000,100);
 
     }
 
