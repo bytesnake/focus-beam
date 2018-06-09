@@ -107,7 +107,7 @@ public class GameFieldView extends View {
 
         if(selected != "") {
             mPaint.setTextSize(25f);
-           canvas.drawText("Player: " + selected, 25, 160, mPaint);
+           canvas.drawText("Player - " + selected, 20, 160, mPaint);
         }
 
     }
