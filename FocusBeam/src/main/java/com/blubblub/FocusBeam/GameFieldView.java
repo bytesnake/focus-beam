@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -30,6 +31,7 @@ public class GameFieldView extends View {
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
+
 
         // at the beginning no player is selected
         selected = "";
@@ -56,6 +58,14 @@ public class GameFieldView extends View {
         float mid_y = height / 2.0f;
         float mid_x = width / 2.0f;
 
+        //get colours
+/*        int color_background = ContextCompat.getColor(context, R.color.color_background);
+        int color_beam = ContextCompat.getColor(context, R.color.color_beam);
+        int color_players = ContextCompat.getColor(context, R.color.color_players);
+        int color_text = ContextCompat.getColor(context, R.color.color_text);
+        int color_ball = ContextCompat.getColor(context, R.color.color_ball);
+*/
+
         // get point
         Point point = state.getPoint((int)(CIRCLE_RADIUS - 2*PLAYER_RADIUS));
         point.x = point.x + (int)mid_x;
@@ -69,23 +79,23 @@ public class GameFieldView extends View {
 
             mPaint.setStrokeWidth(3f);
             if(name == selected)
-                mPaint.setColor(Color.BLUE);
+                mPaint.setColor(R.color.color_players);
             else
-                mPaint.setColor(Color.BLACK);
+                mPaint.setColor(R.color.color_beam);
             canvas.drawLine((float)pl_x, (float)pl_y, point.x, point.y, mPaint);
 
             mPaint.setStrokeWidth(6f);
             if(name == selected) {
                 mPaint.setStyle(Paint.Style.STROKE);
-                mPaint.setColor(Color.BLUE);
+                //mPaint.setColor(R.color.color_beam);
                 canvas.drawCircle((float)pl_x, (float)pl_y, (float)PLAYER_RADIUS, mPaint);
             }
 
             mPaint.setStyle(Paint.Style.FILL);
-            mPaint.setColor(Color.RED);
+            mPaint.setColor(R.color.color_players);
             canvas.drawCircle((float)pl_x, (float)pl_y, (float)PLAYER_RADIUS, mPaint);
 
-            mPaint.setColor(Color.BLACK);
+            mPaint.setColor(R.color.color_text);
             mPaint.setTextSize(30);
             String text = Integer.toString((int)state.getScore(name));
             float textWidth = mPaint.measureText(text);
@@ -95,12 +105,13 @@ public class GameFieldView extends View {
             i += 1;
         }
 
-        mPaint.setColor(Color.BLACK);
+        mPaint.setColor(R.color.color_ball);
         mPaint.setStrokeWidth(2f);
         mPaint.setStyle(Paint.Style.FILL);
 
         canvas.drawCircle(point.x, point.y, (float)PLAYER_RADIUS / 2.0f, mPaint);
 
+        mPaint.setColor(R.color.color_text);
         if(!selected.equals("")) {
             mPaint.setTextSize(25f);
            canvas.drawText("Player - " + selected, 20, 160, mPaint);
