@@ -16,8 +16,6 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.util.ArrayList;
-
 interface SubscriberListener {
     void gotValues(String topic, GameState.DataSet val);
 }
@@ -104,7 +102,7 @@ public class Subscriber {
         options.setServerURIs(new String[] {addr});
         options.setConnectionTimeout(200);
 
-        FocusBeam.log(activity, "Open a connection to " + addr);
+        FocusBeam.log(activity, "Try to connect with server " + addr);
 
         client.connect(options, null, new IMqttActionListener() {
             @Override
@@ -115,6 +113,8 @@ public class Subscriber {
                 disconnectedBufferOptions.setPersistBuffer(false);
                 disconnectedBufferOptions.setDeleteOldestMessages(false);
                 client.setBufferOpts(disconnectedBufferOptions);
+
+                // try to subscribe to every topic possible
                 try {
                     subscribeEverything();
                 } catch(MqttException ex) {
@@ -145,7 +145,6 @@ public class Subscriber {
 
     private void gotMessage(String topic, MqttMessage msg) {
         byte[] payload = msg.getPayload();
-        ArrayList<Double> values = new ArrayList();
 
         try {
             String jsonString = new String(payload);
@@ -158,7 +157,7 @@ public class Subscriber {
         } catch (NumberFormatException ex) {
             Log.e("Focus Beam", "Could not parse double " + ex);
         } catch (IllegalArgumentException ex) {
-            Log.e("Focus Beam", "Too less values in packet: " + ex);
+            Log.e("Focus Beam", "Data packet has wrong size: " + ex.getMessage());
         }
     }
 }

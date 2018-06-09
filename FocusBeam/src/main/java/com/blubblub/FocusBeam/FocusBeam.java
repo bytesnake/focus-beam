@@ -79,26 +79,25 @@ public class FocusBeam extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_favorite) {
-           AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            // create a dialog where we can enter a new server address
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
             dialog.setTitle("Server adress");
             dialog.setMessage("Please enter a valid address:");
 
+            // create a new edit text with the previous server adress
             final EditText editText = new EditText(this);
             editText.setText(subscribe.getAddr());
-
             dialog.setView(editText);
 
+            // and a confirm button for fun!
             dialog.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    String addr = editText.getText().toString();
-
-                    Log.d("Focus Beam", "Got: " + addr);
-
-                    subscribe.setAddr(addr);
+                    subscribe.setAddr(editText.getText().toString());
                 }
             });
 
+            // now show the whole thing
             dialog.show();
 
             return true;
