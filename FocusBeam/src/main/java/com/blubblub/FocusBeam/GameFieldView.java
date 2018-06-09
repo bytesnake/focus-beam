@@ -106,7 +106,8 @@ public class GameFieldView extends View {
         canvas.drawCircle(point.x, point.y, (float)PLAYER_RADIUS / 2.0f, mPaint);
 
         if(selected != "") {
-           canvas.drawText("Player: " + selected, 10, 40, mPaint);
+            mPaint.setTextSize(25f);
+           canvas.drawText("Player: " + selected, 25, 160, mPaint);
         }
 
     }
@@ -134,10 +135,14 @@ public class GameFieldView extends View {
             if(Math.sqrt(Math.pow(pl_x-x,2) + Math.pow(pl_y-y,2)) < PLAYER_RADIUS) {
                 Log.d("Focus Beam", "Selected: " + name);
                 selected = name;
+
+                return true;
             }
 
             i += 1;
         }
+
+        selected = "";
 
         return false;
     }

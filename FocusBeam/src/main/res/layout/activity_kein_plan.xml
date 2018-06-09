@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".FocusBeam">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/top_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        style="@style/HeaderBar"
+        app:theme="@style/HeaderBar"
+        app:popupTheme="@style/Base.ThemeOverlay.AppCompat.ActionBar"
+        android:elevation="4dp"
+        />
+
     <com.blubblub.FocusBeam.GameFieldView
         android:id="@+id/game_field"
         android:layout_width="match_parent"

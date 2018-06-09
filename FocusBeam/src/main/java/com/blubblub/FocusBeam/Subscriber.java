@@ -23,22 +23,49 @@ interface SubscriberListener {
 }
 
 public class Subscriber {
-    final String serverURI = "tcp://192.168.43.42:1883";
+    final String serverURI = "tcp://192.168.1.1:1883";
     String clientId = "AndroidClient";
 
+    private Context context;
     private Activity activity;
     private MqttAndroidClient client;
     private SubscriberListener listener;
 
-    public Subscriber(Context context) {
-        activity = (Activity) context;
+    public Subscriber(Context _context) {
+        context = _context;
+        activity = (Activity)_context;
         listener = null;
 
-        client = new MqttAndroidClient(context, serverURI, clientId);
+        createClient(context, serverURI);
+    }
+
+    public String getAddr() {
+        return client.getServerURI();
+    }
+
+    public void setAddr(String addr) {
+        try {
+            if (client.isConnected())
+                client.disconnect();
+
+            client = null;
+            createClient(context, addr);
+        } catch(MqttException ex) {
+            FocusBeam.log(activity, "Could not create a new client!");
+        }
+    }
+
+    private void createClient(Context context, String addr) {
+        client = new MqttAndroidClient(context, addr, clientId);
+
         client.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
                 FocusBeam.log(activity, "Connection to broker established");
+                try {
+                    subscribeEverything();
+                } catch (MqttException e) {
+                }
             }
 
             @Override
@@ -57,16 +84,12 @@ public class Subscriber {
             }
         });
 
-        MqttConnectOptions options = new MqttConnectOptions();
-        options.setAutomaticReconnect(true);
-        options.setCleanSession(false);
-
         try {
-            connect(options);
-        } catch(MqttException ex) {
+            connect(addr);
+        } catch (MqttException ex) {
             ex.printStackTrace();
 
-            FocusBeam.log(activity, "Failed to connect to " + serverURI + " " + ex);
+            FocusBeam.log(activity, "Failed to connect to " + addr);
         }
     }
 
@@ -74,7 +97,15 @@ public class Subscriber {
         listener = lis;
     }
 
-    private void connect(MqttConnectOptions options) throws MqttException {
+    private void connect(final String addr) throws MqttException {
+        MqttConnectOptions options = new MqttConnectOptions();
+        options.setAutomaticReconnect(true);
+        options.setCleanSession(false);
+        options.setServerURIs(new String[] {addr});
+        options.setConnectionTimeout(200);
+
+        FocusBeam.log(activity, "Open a connection to " + addr);
+
         client.connect(options, null, new IMqttActionListener() {
             @Override
             public void onSuccess(IMqttToken asyncActionToken) {
@@ -93,7 +124,7 @@ public class Subscriber {
 
             @Override
             public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                FocusBeam.log(activity, "Failed to connect to " + serverURI + " " + exception);
+                FocusBeam.log(activity, "Failed to connect to " + addr);
             }
         });
     }
