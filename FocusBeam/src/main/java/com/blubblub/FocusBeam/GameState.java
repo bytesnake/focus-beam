@@ -28,7 +28,6 @@ public class GameState {
             data = new double[SIZE];
 
             if(arr.length() != SIZE) {
-                Log.e("Focus Beam", "Data packet has a wrong size!");
                 throw new IllegalArgumentException(arr.length() + " != " + SIZE);
             }
 
@@ -88,12 +87,8 @@ public class GameState {
                     (int)(radius * (coeff(name)/val)*Math.sin(Math.toRadians(360 * i / count)))
             );
 
-            //Log.d("Focus Beam", "Offset " + radius * ((coeff(name)/val)*Math.cos(Math.toRadians(360 * i / count))));
-
             i += 1;
         }
-
-        //Log.d("Focus Beam", "Point at " + point.x + " : " + point.y);
 
         return point;
     }
@@ -107,15 +102,11 @@ public class GameState {
             val += coeff(name);
         }
 
-        //val = Math.sqrt(val);
-
         if(val < 10e-5)
             return;
 
         for (String name : names()) {
             double update_score = 2 * (coeff(name) / val) - 1;
-
-            //Log.d("Focus Beam", "Update: " + update_score);
 
             if(score.containsKey(name))
                 score.put(name, score.get(name) + update_score * UPDATE_RATE);

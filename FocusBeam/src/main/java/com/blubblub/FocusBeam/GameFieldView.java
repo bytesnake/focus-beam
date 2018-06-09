@@ -26,17 +26,13 @@ public class GameFieldView extends View {
     public GameFieldView(Context c, AttributeSet attrs) {
         super(c, attrs);
 
-        // and we set a new Paint with the desired attributes
+        // set desired painting properties
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
-        mPaint.setColor(Color.BLACK);
-        mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
-        mPaint.setStrokeWidth(4f);
 
+        // at the beginning no player is selected
         selected = "";
-
-
     }
 
     // override onSizeChanged
@@ -61,7 +57,7 @@ public class GameFieldView extends View {
         float mid_x = width / 2.0f;
 
         // get point
-        Point point = state.getPoint((int)(CIRCLE_RADIUS - PLAYER_RADIUS));
+        Point point = state.getPoint((int)(CIRCLE_RADIUS - 2*PLAYER_RADIUS));
         point.x = point.x + (int)mid_x;
         point.y = point.y + (int)mid_y;
 
@@ -105,39 +101,41 @@ public class GameFieldView extends View {
 
         canvas.drawCircle(point.x, point.y, (float)PLAYER_RADIUS / 2.0f, mPaint);
 
-        if(selected != "") {
-           canvas.drawText("Player: " + selected, 10, 40, mPaint);
+        if(!selected.equals("")) {
+            mPaint.setTextSize(25f);
+           canvas.drawText("Player - " + selected, 20, 160, mPaint);
         }
 
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        //Log.d("Event", "Event: " + event.getAction());
-
-        if(event.getAction() != 0) {
+        if(event.getAction() != 0)
             return false;
-        }
 
         final float x = event.getX();
         final float y = event.getY();
 
-        Log.d("MouseEvent", "Got clikc at " + x + " : " + y);
-
         int num = state.size();
         int i = 0;
         for (String name : state.names()) {
+            // calculate the player circle center
             double pl_x = width / 2.0f + CIRCLE_RADIUS * Math.cos(Math.toRadians(360 * i / num ));
             double pl_y = height / 2.0f + CIRCLE_RADIUS * Math.sin(Math.toRadians(360 * i / num ));
-            Log.d("Focus Beam", "Player " + pl_x + " : " + pl_y);
-            Log.d("Focus Beam", "Distance: " + Math.sqrt(Math.pow(pl_x-x,2) + Math.pow(pl_y-y,2)));
+
+            // check if the touch event lies within the player circle
             if(Math.sqrt(Math.pow(pl_x-x,2) + Math.pow(pl_y-y,2)) < PLAYER_RADIUS) {
-                Log.d("Focus Beam", "Selected: " + name);
                 selected = name;
+
+                return false;
             }
 
             i += 1;
         }
+
+        // if no player circle was touched, then we assume that the user meant to
+        // select no player
+        selected = "";
 
         return false;
     }
