@@ -9,7 +9,7 @@
     </style>
 
     <style name="HeaderBar" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:background">#303F9F</item>
+        <item name="android:background">#25a9f0</item>
         <item name="android:textColorPrimary">#FFFFFF</item>
         <item name="android:textColorSecondary">#FFFFFF</item>
         <item name="actionMenuTextColor">#FFFFFF</item>

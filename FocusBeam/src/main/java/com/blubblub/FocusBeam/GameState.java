@@ -5,17 +5,21 @@ import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class GameState {
     // we have eight channel, each five spectral bands
-    final static int SIZE = 1;
+    final static int SIZE = 28;
     final static double UPDATE_RATE = 2; // maximum per 100ms
 
     private HashMap<String, ArrayList<DataSet>> player;
@@ -24,27 +28,58 @@ public class GameState {
     static public class DataSet {
         private double[] data;
 
-        public DataSet(JSONArray arr) throws JSONException, IllegalArgumentException {
+        public DataSet(JSONObject obj) throws JSONException, IllegalArgumentException {
             data = new double[SIZE];
 
-            if(arr.length() != SIZE) {
-                throw new IllegalArgumentException(arr.length() + " != " + SIZE);
-            }
+            Iterator<String> keys = obj.keys();
 
-            for(int i = 0; i < arr.length(); i++)
-                data[i] = arr.getDouble(i);
+            while(keys.hasNext()) {
+                String s = keys.next();
+                JSONArray arr = obj.getJSONObject(s).getJSONObject("block").getJSONArray("data");
+
+                if(arr.length() != 7)
+                    throw new IllegalArgumentException(arr.length() + " != " + 7);
+
+                int i;
+                switch(s) {
+                    case "alpha": i = 0; break;
+                    case "beta": i = 7; break;
+                    case "delta": i = 14; break;
+                    case "theta": i = 21; break;
+                    default: throw new IllegalArgumentException("Wrong band name: " + s);
+                }
+
+                for(int j = i; j < i+7; j++)
+                    data[j] = arr.getDouble(j - i );
+
+            }
         }
 
-        public double calculate() {
-            return data[data.length - 1];
+        public double[] calculate() {
+            double[] arr = new double[7];
+
+            for(int i = 0; i < 7; i++) {
+                arr[i] = data[7 + i] / (data[0 + i] + data[21 + i]);
+            }
+
+            return arr;
+        }
+
+        public double calculate_max() {
+            double max_elm = 0.0;
+
+            for(double elm : calculate()) {
+                if(max_elm < elm)
+                    max_elm = elm;
+            }
+
+            return max_elm;
         }
     }
 
     public GameState() {
         player = new HashMap<>();
         score = new HashMap<>();
-
-
     }
 
     public void update(String name, DataSet data) {
@@ -66,7 +101,7 @@ public class GameState {
         if(player.get(name).size() == 0)
             return 0.0;
 
-        return player.get(name).get(player.get(name).size()-1).calculate();
+        return player.get(name).get(player.get(name).size()-1).calculate_max();
 
     }
 

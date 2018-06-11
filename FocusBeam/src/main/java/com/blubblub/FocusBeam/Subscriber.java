@@ -15,6 +15,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 interface SubscriberListener {
     void gotValues(String topic, GameState.DataSet val);
@@ -148,9 +149,11 @@ public class Subscriber {
 
         try {
             String jsonString = new String(payload);
-            JSONArray json = new JSONArray(jsonString).getJSONArray(0);
+
+            JSONObject obj = new JSONObject(jsonString);
+            //JSONArray json = new JSONArray(jsonString).getJSONArray(0);
             Log.d("Focus Beam", "Blub");
-            listener.gotValues(topic, new GameState.DataSet(json));
+            listener.gotValues(topic, new GameState.DataSet(obj));
             Log.d("Focus Beam", "Blub");
         } catch (JSONException json) {
             Log.e("Focus Beam", "Could not parse json string" + json);
