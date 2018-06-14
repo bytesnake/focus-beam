@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="all_views">
+        <item>Concentration game</item>
+        <item>Electrode display</item>
+    </string-array>
+</resources>

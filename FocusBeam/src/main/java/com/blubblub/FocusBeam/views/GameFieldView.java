@@ -1,17 +1,17 @@
-package com.blubblub.FocusBeam;
+package com.blubblub.FocusBeam.views;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.blubblub.FocusBeam.GameState;
+import com.blubblub.FocusBeam.R;
 
 public class GameFieldView extends View {
     final static double CIRCLE_RADIUS = 300;
@@ -25,17 +25,21 @@ public class GameFieldView extends View {
     private String selected;
     public GameState state;
 
-    public GameFieldView(Context c, AttributeSet attrs) {
+    public GameFieldView(Context c, AttributeSet attrs, GameState _state) {
         super(c, attrs);
+
+        // set a name
+        setTag("Game Field View");
 
         // set desired painting properties
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
 
-
         // at the beginning no player is selected
         selected = "";
+
+        state = _state;
     }
 
     // override onSizeChanged
@@ -114,9 +118,9 @@ public class GameFieldView extends View {
         if(!selected.equals("")) {
             mPaint.setColor(getResources().getColor(R.color.color_text));
 
-            mPaint.setTextSize(35f);
+            mPaint.setTextSize(45f);
             float header_length = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,5,getResources().getDisplayMetrics());
-            canvas.drawText("Player - " + selected, 20, header_length, mPaint);
+            canvas.drawText("Player - " + selected, 20, 230, mPaint);
         }
 
     }
@@ -151,9 +155,5 @@ public class GameFieldView extends View {
         selected = "";
 
         return false;
-    }
-
-    public void update() {
-        invalidate();
     }
 }

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.blubblub.FocusBeam.views.TableView
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/table_view">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:text="Player1"
+        android:id="@+id/player1"/>
+
+    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:stretchColumns="*"
+        android:tag="player1"
+        android:layout_below="@id/player1"
+        android:id="@+id/table1">
+
+        <TableRow>
+            <TextView
+                android:text="α"
+                android:tag="alpha"
+                android:padding="3dip"
+                android:layout_width="0dip"
+                android:layout_weight="1"/>
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:text="β"
+                android:tag="beta"
+                android:padding="3dip" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:text="γ"
+                android:tag="gamma"
+                android:padding="3dip" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:text="θ"
+                android:tag="delta"
+                android:padding="3dip" />
+        </TableRow>
+
+
+    </TableLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:text="Player2"
+        android:id="@+id/player2"
+        android:layout_below="@id/table1"/>
+
+    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:stretchColumns="*"
+        android:tag="player2"
+        android:layout_below="@id/player2">
+
+        <TableRow>
+            <TextView
+                android:text="α"
+                android:tag="alpha"
+                android:padding="3dip" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:text="β"
+                android:tag="beta"
+                android:padding="3dip" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:text="γ"
+                android:tag="gamma"
+                android:padding="3dip" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:text="θ"
+                android:tag="delta"
+                android:padding="3dip" />
+        </TableRow>
+
+
+    </TableLayout>
+</com.blubblub.FocusBeam.views.TableView>

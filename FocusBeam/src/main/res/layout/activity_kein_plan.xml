@@ -16,10 +16,11 @@
         android:elevation="4dp"
         />
 
-    <com.blubblub.FocusBeam.GameFieldView
-        android:id="@+id/game_field"
+    <RelativeLayout
+        android:id="@+id/app_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textColor="#FFFFFF" />
+        android:orientation="horizontal"
+        android:layout_marginTop="55dp" />
 
 </android.support.constraint.ConstraintLayout>

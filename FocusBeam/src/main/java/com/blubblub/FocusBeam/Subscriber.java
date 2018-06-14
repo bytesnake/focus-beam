@@ -17,12 +17,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Random;
+
 interface SubscriberListener {
     void gotValues(String topic, GameState.DataSet val);
 }
 
 public class Subscriber {
-    final String serverURI = "tcp://192.168.1.1:1883";
+    final String serverURI = "tcp://192.168.43.42:1883";
     String clientId = "AndroidClient";
 
     private Context context;
@@ -53,9 +55,20 @@ public class Subscriber {
             FocusBeam.log(activity, "Could not create a new client!");
         }
     }
+    public static String random() {
+        Random generator = new Random();
+        StringBuilder randomStringBuilder = new StringBuilder();
+        int randomLength = generator.nextInt(16);
+        char tempChar;
+        for (int i = 0; i < randomLength; i++){
+            tempChar = (char) (generator.nextInt(96) + 32);
+            randomStringBuilder.append(tempChar);
+        }
+        return randomStringBuilder.toString();
+    }
 
     private void createClient(Context context, String addr) {
-        client = new MqttAndroidClient(context, addr, clientId);
+        client = new MqttAndroidClient(context, addr, random());
 
         client.setCallback(new MqttCallbackExtended() {
             @Override
@@ -152,9 +165,7 @@ public class Subscriber {
 
             JSONObject obj = new JSONObject(jsonString);
             //JSONArray json = new JSONArray(jsonString).getJSONArray(0);
-            Log.d("Focus Beam", "Blub");
             listener.gotValues(topic, new GameState.DataSet(obj));
-            Log.d("Focus Beam", "Blub");
         } catch (JSONException json) {
             Log.e("Focus Beam", "Could not parse json string" + json);
         } catch (NumberFormatException ex) {

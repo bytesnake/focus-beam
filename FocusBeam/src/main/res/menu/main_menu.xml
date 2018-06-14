@@ -5,6 +5,18 @@
     tools:context=".FocusBeam">
 
     <item
+        android:id="@+id/action_adjust"
+        android:orderInCategory="300"
+        android:title="User"
+        android:icon="@drawable/ic_adjust_black_24dp"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_select_view"
+        android:orderInCategory="300"
+        android:title="User"
+        android:icon="@drawable/ic_assessment_black_24dp"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/action_favorite"
         android:orderInCategory="300"
         android:title="User"
